@@ -1,0 +1,40 @@
+body
+{
+    font-family: Arial;
+    font-size: 10pt;
+}
+.basic-table{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+}
+.basic-table-th
+{
+    background-color: #F7F7F7;
+    color: #333;
+    font-weight: bold;
+}
+.basic-table-th, .basic-table-td
+{
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+.liste-table{
+    border-collapse: collapse;
+    width: 920px;
+    font-family: "Arial Tur";
+    color: windowtext;
+    font-size: 12.0pt;
+    font-weight: 200;
+    font-style: normal;
+    text-decoration: none;
+}
+.liste-table-td{
+    border-style: solid;
+    border-width: thin;
+    /*height: 8pt;*/
+    text-align: center;
+}
+.pageDiv{
+    width: 900px;
+    height: 1350px;
+}
