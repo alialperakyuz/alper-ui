@@ -27,19 +27,43 @@
     
 </head>
 <body ng-app="MyApp" ng-controller="MyController" style="padding: 20px;">
-
-    <div id="choosenPorcessModeDiv" ng-show="!choosenList">
+    <div ng-show="loading">
+        <div class="loader" style="float: left;" > </div>
+        <p style="margin-left: 80px; padding-top: 10px;">İşlem yapılıyor, lütfen bekleyiniz...</p>
+    </div>
+    
+    <div id="choosenPorcessModeDiv" ng-show="!choosenList && !loading">
         <div ng-show="!IsVisible">
             <input type="file" class="btn" ngf-select="SelectFile($file)" />
             <input type="button" class="btn btn-primary" value="Yükle" ng-click="Upload()" />
+            <iframe id="templateIFrame" style="display:none;"></iframe>
+            <a class="btn btn-link" style="float: right; margin-right: 20px;" href="resource/Liste.xlsx">Taslak İndir</a>
             <hr />
+            <div style="text-align: left; margin: 100px;">
+                <h4>Sistemin Çalışma Mantığı</h4>
+                <p>
+                    <strong>Not : </strong> Sisteme eklenecek excel taslağını indirmek için sağ üstte bulunan '<strong>Taslak İndir</strong>' butonuna tıklayarak indirebilirsiniz. 
+                    Burada işlemin yapılmasını beklediğiniz listeyi bu taslak içerisine kopyalayıp tekrar buradaki '<strong>Dosya Seç</strong>' adımından sisteme ekleyebilirsiniz. 
+                </p>
+                <p>
+                    <strong>Not2 : </strong> Eklenecek olan excel *.xlsx uzantılı olmalı ve adında boşluk, parantez gibi özel simgeler kullanılmamalıdır. 
+                    Örn; <strong style="color: green;">Liste.xlsx</strong> -> Kullanılabilir. <strong style="color: red;">Liste (1).xlsx</strong> kullanılamaz.
+                </p>
+                <li>'<strong>Dosya Seç</strong>' butonuna tıklayarak işlem yapılacak olan dosya seçilir.</li>
+                <li>'<strong>Yükle</strong>' butonuna tıklayarak, seçilen excelin sisteme yüklenmesi ve ekranda listelenmesi sağlanır.</li>
+                <li>Ekranda yukarıda '<stron>Ara</stron>' alanında filtrelemek istediğiniz kelimeyi yazarak aşağıda açılan listenin filtrelenmesini sağlayabilirsiniz.</li>
+                <li>Ekranda görüntülenen listede, işlem yapılacak olan satırlar seçilmeli.</li>
+                <li>İşlem yapılacak tüm satırlar seçildikten sonra ekranın sağ üst tarafında bulunan '<strong>Listele</strong>' butonuna tıklayarak Liste ve İade Çek senetlerinin oluşturulup ekranda listelenmesini sağlayabilirsiniz. </li>
+                <li>İşlem sonucunu yazıcıdan çıkartmak için <strong>Ctrl + P</strong> ya da seçenekler kısmından <strong>Yazdır</strong> seçeneğini seçerek işlem sonucunu yazdırabilirsiniz.</li>
+
+            </div>
         </div>
         
         <div id="listeDiv" ng-show="IsVisible">
             <div class="form-group" >
                 <label for="searchLabel" style="float: left;">Ara :</label>
                 <input type="text" style="margin-left:10px ;float: left; width: 300px;" class="form-control" width="200" id="search" ng-model="search">
-                <input type="button" style="float: right;"  class="btn btn-primary" value="Listele" ng-click="listele()" />
+                <input type="button" style="float: right; margin-right: 10px;"  class="btn btn-primary" value="Listele" ng-click="listele()" />
             </div>
             <br>
             <hr style="margin-top: 30px"/>
@@ -86,7 +110,7 @@
         
     </div>
 
-    <div ng-show="choosenList" >
+    <div ng-show="choosenList && !loading" >
         <!--<input type="button" class="btn btn-primary" value="PDF İndir" ng-click="printDocument()" />
         <hr />
         -->
@@ -164,8 +188,7 @@
                         </div>
                         <br>
                         <div id="ucuncuSatir">
-                            <p style="float: left; margin-left: -300px;">,</p>
-                            <p style="float: left; margin-left: 200px; "><strong>{{resultLine.toplamTutarYazi}}</strong> bizdeki cari hesabınıza</p>
+                            <p style="float: left; ">, <strong style="margin-left: 50px;">{{resultLine.toplamTutarYazi}}</strong> bizdeki cari hesabınıza</p>
                         </div>
                         <br>
                         <div id="dorduncuSatir">

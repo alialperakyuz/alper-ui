@@ -1,12 +1,14 @@
 app.controller('MyController', function ($scope, $window) {
     $scope.search = '';
+    $scope.loading = false;
     $scope.date = new Date().toLocaleDateString().replace('.','/').replace('.','/');
     $scope.SelectFile = function (file) {
         $scope.SelectedFile = file;
     };
     $scope.Upload = function () {
+        $scope.loading = true;
         var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
-        if (regex.test($scope.SelectedFile.name.toLowerCase())) {
+        if ($scope.SelectedFile != null && $scope.SelectedFile.name != null && regex.test($scope.SelectedFile.name.toLowerCase())) {
             if (typeof (FileReader) != "undefined") {
                 var reader = new FileReader();
                 //For Browsers other than IE.
@@ -29,10 +31,13 @@ app.controller('MyController', function ($scope, $window) {
                 }
             } else {
                 $window.alert("This browser does not support HTML5.");
+                $scope.loading = false;
             }
         } else {
             $window.alert("Please upload a valid Excel file.");
+            $scope.loading = false;
         }
+        
     };
 
     $scope.ProcessExcel = function (data) {
@@ -51,9 +56,11 @@ app.controller('MyController', function ($scope, $window) {
         $scope.$apply(function () {
             $scope.TumListe = excelRows;
             $scope.IsVisible = true;
+            $scope.loading = false;
         });
     };
     $scope.listele = function () {
+        $scope.loading = true;
         $scope.choosenList = [];
         $scope.result = [];
         $scope.record = {
@@ -148,6 +155,7 @@ app.controller('MyController', function ($scope, $window) {
                 }
             }
         }
+        $scope.loading = false;
     };
     $scope.export = function(){
         html2canvas(document.getElementById('resultDiv'), {
@@ -230,13 +238,10 @@ app.controller('MyController', function ($scope, $window) {
         sayi=String(sayi);
         this.sonuc;
         
-        let bolum1 = ["", "Bir", "İki", "Üç", "Dört", "Beş", "Altı", "Yedi", "Sekiz", "Dokuz"];
-        let bolum2 = ["", "On", "Yirmi", "Otuz", "Kırk", "Elli", "Altmış", "Yetmiş", "Seksen", "Doksan"];
-        let bolum3 = ["", "Yüz", "Bin", "Milyon", "Milyar", "Trilyon", "Katrilyon"];
-        
+
         let sayi1; //tam kısım
         let sayi2 = ""; // ondalıklı kısım
-        let sonuc = "";
+        
         
         sayi = sayi.replace(",","");
         //sayi = sayi.replace(",", "."); //virgül girilirse noktaya dönüştürülüyor
@@ -246,14 +251,35 @@ app.controller('MyController', function ($scope, $window) {
         
             sayi1 = sayi.substring(0, sayi.indexOf(".")); // tam kısım
             sayi2 = sayi.substring(sayi.indexOf("."), sayi.length); // ondalıklı kısım
-        
+
+            var tamKisim = $scope.getTextFromNumber(sayi1);
+            
+            if(sayi2 != '.00'){
+                var ondalikKisim = $scope.getTextFromNumber(sayi2);
+                return '#' + tamKisim + ' TL, ' + ondalikKisim + ' Krş.#';
+            }else{
+                return '#' + tamKisim + ' TL.#';
+            }
+
+            
         }
         else 
         {
             sayi1 = sayi; // ondalık yok
+            return '#' + $scope.getTextFromNumber(sayi) + 'TL.#';
         }
+    }
+
+    $scope.getTextFromNumber = function(sayi){
+        let sonuc = "";
+
+        let bolum1 = ["", "Bir", "İki", "Üç", "Dört", "Beş", "Altı", "Yedi", "Sekiz", "Dokuz"];
+        let bolum2 = ["", "On", "Yirmi", "Otuz", "Kırk", "Elli", "Altmış", "Yetmiş", "Seksen", "Doksan"];
+        let bolum3 = ["", "Yüz", "Bin", "Milyon", "Milyar", "Trilyon", "Katrilyon"];
         
-        var rk = sayi1.split(""); // rakamlara ayırma
+
+
+        var rk = sayi.split(""); // rakamlara ayırma
         
         let son;
         let w = 1; // işlenen basamak
@@ -359,8 +385,7 @@ app.controller('MyController', function ($scope, $window) {
             }
         
         }
-        
-        return '#' + sonuc + 'TL.#';
+        return sonuc;
     }
    
 });
