@@ -1,7 +1,7 @@
 app.controller('MyController', function ($scope, $window) {
     $scope.search = '';
     $scope.loading = false;
-    $scope.date = new Date().toLocaleDateString().replace('.','/').replace('.','/');
+    $scope.date = new Date().toLocaleDateString().replaceAll('.','/').replaceAll('.','/');
     $scope.SelectFile = function (file) {
         $scope.SelectedFile = file;
     };
@@ -77,7 +77,7 @@ app.controller('MyController', function ($scope, $window) {
         for(var index = 0; index < $scope.TumListe.length; index++){
             if($scope.TumListe[index].selected){
                 $scope.choosenList[selectedIndex] = $scope.TumListe[index];
-                $scope.choosenList[selectedIndex].Vade = new Date($scope.choosenList[selectedIndex].Vade).toLocaleDateString().replace('.','/').replace('.','/');
+                $scope.choosenList[selectedIndex].Vade = $scope.getDateFromStringWithFormat($scope.choosenList[selectedIndex].Vade);
 
                 var hasResultCariKod = false;
 
@@ -85,19 +85,19 @@ app.controller('MyController', function ($scope, $window) {
                     if($scope.result[resultIndex] != null && $scope.result[resultIndex].cariKod == $scope.choosenList[selectedIndex].CariKodu){
                         $scope.result[resultIndex].senetListesi[$scope.result[resultIndex].senetListesi.length] = $scope.choosenList[selectedIndex];
                         $scope.result[resultIndex].iadeSatirSayisi = $scope.result[resultIndex].iadeSatirSayisi + 1;
-                        $scope.result[resultIndex].toplamTutar = (parseFloat($scope.result[resultIndex].toplamTutar) + parseFloat($scope.choosenList[selectedIndex].Tutar.replace(",",""))).toFixed(2);
+                        $scope.result[resultIndex].toplamTutar = (parseFloat($scope.result[resultIndex].toplamTutar) + parseFloat($scope.choosenList[selectedIndex].Tutar.replaceAll(",",""))).toFixed(2);
                         const constTutar = parseFloat($scope.result[resultIndex].toplamTutar).toFixed(2);
 
                         var tutar = new Intl.NumberFormat('tr-TR').format(constTutar);
                         //tutar = tutar.toLocaleString();
-                        tutar = tutar.replace(',','-');
-                        tutar = tutar.replace('.',',');
-                        tutar = tutar.replace('-',',');
+                        tutar = tutar.replaceAll(',','-');
+                        tutar = tutar.replaceAll('.',',');
+                        tutar = tutar.replaceAll('-',',');
                         $scope.result[resultIndex].toplamTutarStr = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format($scope.result[resultIndex].toplamTutar);
-                        $scope.result[resultIndex].toplamTutarStr = $scope.result[resultIndex].toplamTutarStr.replace('₺','');
-                        $scope.result[resultIndex].toplamTutarStr = $scope.result[resultIndex].toplamTutarStr.replace(',','-');
-                        $scope.result[resultIndex].toplamTutarStr = $scope.result[resultIndex].toplamTutarStr.replace('.',',');
-                        $scope.result[resultIndex].toplamTutarStr = $scope.result[resultIndex].toplamTutarStr.replace('-','.');
+                        $scope.result[resultIndex].toplamTutarStr = $scope.result[resultIndex].toplamTutarStr.replaceAll('₺','');
+                        $scope.result[resultIndex].toplamTutarStr = $scope.result[resultIndex].toplamTutarStr.replaceAll(',','-');
+                        $scope.result[resultIndex].toplamTutarStr = $scope.result[resultIndex].toplamTutarStr.replaceAll('.',',');
+                        $scope.result[resultIndex].toplamTutarStr = $scope.result[resultIndex].toplamTutarStr.replaceAll('-','.');
                         $scope.result[resultIndex].toplamTutarYazi =  $scope.getTextAmount($scope.result[resultIndex].toplamTutar);
                         hasResultCariKod = true;
                         break;
@@ -109,17 +109,17 @@ app.controller('MyController', function ($scope, $window) {
                         eczaneAdi : $scope.choosenList[selectedIndex].CiroEden,
                         tarih : $scope.date,
                         iadeSatirSayisi : 1,
-                        toplamTutar : parseFloat($scope.choosenList[selectedIndex].Tutar.replace(",","")).toFixed(2),
+                        toplamTutar : parseFloat($scope.choosenList[selectedIndex].Tutar.replaceAll(",","")).toFixed(2),
                         toplamTutarStr : '',
                         toplamTutarYazi : $scope.getTextAmount($scope.choosenList[selectedIndex].Tutar),
                         senetListesi : []
                     };
                     const constTutar = parseFloat($scope.record.toplamTutar).toFixed(2);
                     $scope.record.toplamTutarStr = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format($scope.record.toplamTutar);
-                    $scope.record.toplamTutarStr = $scope.record.toplamTutarStr.replace('₺','');
-                    $scope.record.toplamTutarStr = $scope.record.toplamTutarStr.replace(',','-');
-                    $scope.record.toplamTutarStr = $scope.record.toplamTutarStr.replace('.',',');
-                    $scope.record.toplamTutarStr = $scope.record.toplamTutarStr.replace('-','.');
+                    $scope.record.toplamTutarStr = $scope.record.toplamTutarStr.replaceAll('₺','');
+                    $scope.record.toplamTutarStr = $scope.record.toplamTutarStr.replaceAll(',','-');
+                    $scope.record.toplamTutarStr = $scope.record.toplamTutarStr.replaceAll('.',',');
+                    $scope.record.toplamTutarStr = $scope.record.toplamTutarStr.replaceAll('-','.');
                     $scope.record.senetListesi[0] = $scope.choosenList[selectedIndex];
                     $scope.result[$scope.result.length] = $scope.record;
                 };
@@ -243,8 +243,8 @@ app.controller('MyController', function ($scope, $window) {
         let sayi2 = ""; // ondalıklı kısım
         
         
-        sayi = sayi.replace(",","");
-        //sayi = sayi.replace(",", "."); //virgül girilirse noktaya dönüştürülüyor
+        sayi = sayi.replaceAll(",","");
+        //sayi = sayi.replaceAll(",", "."); //virgül girilirse noktaya dönüştürülüyor
         
         if (sayi.indexOf(".") > 0) 
         { // nokta varsa (kuruş)
@@ -327,7 +327,7 @@ app.controller('MyController', function ($scope, $window) {
                             { // birbin yazmasını engelle
                                 if(kac-1==i)
                                 { //
-                                    sonuc = sonuc.replace(bolum1[1] + ' ' + bolum3[2], ' ' + bolum3[2]);
+                                    sonuc = sonuc.replaceAll(bolum1[1] + ' ' + bolum3[2], ' ' + bolum3[2]);
                                 }
                             }
                             sonaekle = 1; // sona bin eklendi
@@ -386,6 +386,20 @@ app.controller('MyController', function ($scope, $window) {
         
         }
         return sonuc;
+    }
+    $scope.getDateFromStringWithFormat = function(dateStringValue){
+        var dateValue = dateStringValue.replaceAll(" ","/");
+        dateValue = dateValue.replaceAll("-", "/");
+        dateValue = dateValue.replaceAll(".", "/");
+        var dateArr = dateValue.split("/");
+        var day = parseInt(dateArr[0]);
+        var month = parseInt(dateArr[1])-1;
+        var year = parseInt(dateArr[2]);
+        var retVal = new Date();
+        retVal.setYear(year);
+        retVal.setDate(day);
+        retVal.setMonth(month);
+        return retVal.toLocaleDateString().replaceAll('.','/').replaceAll('.','/');
     }
    
 });
